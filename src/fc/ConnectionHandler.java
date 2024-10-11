@@ -13,22 +13,22 @@ public class ConnectionHandler implements Runnable {
     }
 
     @Override
-    public void run() {
-        /* 
-         * 1. Create a new cookie instance
-         * 2. Use cookie to read the file given and extract a cookie line. 
-         * 3. Set up a connection with the client
-         * 4. Pass the string to client
-         */
-        
+    public void run() {        
         try {
-            Cookie cookie = Cookie.of(file);
-            OutputStream os = socket.getOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(os);
-            oos.writeObject(cookie);
+            Cookie cookie = Cookie.open(file);
+            InputStream is = socket.getInputStream();
 
-            oos.flush();
-            oos.close();
+            OutputStream os = socket.getOutputStream();
+            BufferedOutputStream bos = new BufferedOutputStream(os);
+
+            byte[] inBytes = is.readAllBytes();
+            String command = new String(inBytes, "UTF-8");
+            String response = cookie.command(command);
+
+            bos.write(response.getBytes());
+
+            bos.flush();
+            bos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

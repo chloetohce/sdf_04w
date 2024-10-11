@@ -14,15 +14,27 @@ public class Client {
         int port = Integer.parseInt(input.substring(input.indexOf(":") + 1));
         Socket socket = new Socket(host, port);
 
+        OutputStream os = socket.getOutputStream();
+
         InputStream is = socket.getInputStream();
-        ObjectInputStream ois = new ObjectInputStream(is);
-        try {
-            Object cookie = ois.readObject();
-            System.out.println("Cookie received: " + cookie.toString());
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Problem reading cookie.");
+        BufferedInputStream bis = new BufferedInputStream(is);
+
+        Console console = System.console();
+        String in = "";
+        while (!in.equals("quit")) {
+            in = console.readLine("> ").trim();
+            os.write(in.getBytes());
+
+            byte[] byteResponse = bis.readAllBytes();
+            String response = new String(byteResponse, "UTF-8");
+            String display = response.substring(Math.max(0, response.indexOf(":"))).
+                trim();
+            System.out.println("Response: " + display);
         }
-        ois.close();
+        
+        os.flush();
+        os.close();
+        bis.close();
         socket.close();
     }
 }

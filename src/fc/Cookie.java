@@ -11,7 +11,15 @@ public class Cookie implements Serializable {
         this.text = text;
     }
 
-    public static Cookie of(File file) throws IOException{
+    public String command(String input) {
+        if (input.equals("get-cookie")) {
+            return this.toString();
+        } else {
+            return "Unrecognised command";
+        }
+    }
+
+    public static Cookie open(File file) throws IOException{
         FileReader fr = new FileReader(file);
         BufferedReader br = new BufferedReader(fr);
         List<String> lines = new ArrayList<>();
@@ -28,6 +36,6 @@ public class Cookie implements Serializable {
 
     @Override
     public String toString() {
-        return this.text;
+        return "get-cookie: " + this.text;
     }
 }

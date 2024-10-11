@@ -22,7 +22,7 @@ public class Server {
         try {
             ServerSocket socket = new ServerSocket(port);
             ExecutorService thrPool = Executors.newFixedThreadPool(2);
-            while (true) {
+            while (!socket.isClosed()) {
                 Socket conn = socket.accept();
                 ConnectionHandler handler = new ConnectionHandler(conn, file);
                 thrPool.submit(handler);
