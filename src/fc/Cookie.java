@@ -4,7 +4,7 @@ import java.io.*;
 import java.security.SecureRandom;
 import java.util.*;
 
-public class Cookie {
+public class Cookie implements Serializable {
     private final String text;
 
     private Cookie(String text) {

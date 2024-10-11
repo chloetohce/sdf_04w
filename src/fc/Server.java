@@ -7,6 +7,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server {
+
+    // Create jar: [go to classes folder] jar cvf ../fortunecookie.jar fc/*.class
+    // Rune jar: java -cp fortunecookie.jar fc.Server
     public static void main(String[] args) {
         int port = 3000;
         String f = "cookie_file.txt";
@@ -17,7 +20,7 @@ public class Server {
 
         File file = new File(f);
         try {
-            ServerSocket socket = new ServerSocket();
+            ServerSocket socket = new ServerSocket(port);
             ExecutorService thrPool = Executors.newFixedThreadPool(2);
             while (true) {
                 Socket conn = socket.accept();
