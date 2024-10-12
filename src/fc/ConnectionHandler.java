@@ -13,22 +13,31 @@ public class ConnectionHandler implements Runnable {
     }
 
     @Override
-    public void run() {        
+    public void run() {
         try {
-            Cookie cookie = Cookie.open(file);
+            
+
             InputStream is = socket.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
 
             OutputStream os = socket.getOutputStream();
-            BufferedOutputStream bos = new BufferedOutputStream(os);
+            OutputStreamWriter osw = new OutputStreamWriter(os);
 
-            byte[] inBytes = is.readAllBytes();
-            String command = new String(inBytes, "UTF-8");
-            String response = cookie.command(command);
+            while (!socket.isClosed()) {
+                Cookie cookie = Cookie.open(file);
+                
+                String command = "";
+                command = br.readLine();
 
-            bos.write(response.getBytes());
+                System.out.println("command: " + command);
+                String response = cookie.command(command);
+                System.out.println("response: " + response);
 
-            bos.flush();
-            bos.close();
+                osw.write(response + "\n");
+                osw.flush();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

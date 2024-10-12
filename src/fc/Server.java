@@ -22,11 +22,11 @@ public class Server {
         try {
             ServerSocket socket = new ServerSocket(port);
             ExecutorService thrPool = Executors.newFixedThreadPool(2);
-            while (!socket.isClosed()) {
-                Socket conn = socket.accept();
-                ConnectionHandler handler = new ConnectionHandler(conn, file);
-                thrPool.submit(handler);
-            }
+
+            Socket conn = socket.accept();
+            ConnectionHandler handler = new ConnectionHandler(conn, file);
+            thrPool.submit(handler);
+
         } catch (IOException e) {
             System.err.println("Unable to open socket");
             System.exit(-1);

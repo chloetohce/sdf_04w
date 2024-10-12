@@ -14,27 +14,35 @@ public class Client {
         int port = Integer.parseInt(input.substring(input.indexOf(":") + 1));
         Socket socket = new Socket(host, port);
 
-        OutputStream os = socket.getOutputStream();
-
-        InputStream is = socket.getInputStream();
-        BufferedInputStream bis = new BufferedInputStream(is);
-
         Console console = System.console();
         String in = "";
-        while (!in.equals("quit")) {
-            in = console.readLine("> ").trim();
-            os.write(in.getBytes());
 
-            byte[] byteResponse = bis.readAllBytes();
-            String response = new String(byteResponse, "UTF-8");
-            String display = response.substring(Math.max(0, response.indexOf(":"))).
-                trim();
-            System.out.println("Response: " + display);
+        OutputStream os = socket.getOutputStream();
+        OutputStreamWriter osw = new OutputStreamWriter(os);
+        BufferedWriter bw = new BufferedWriter(osw);
+
+        InputStream is = socket.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+
+        while (!in.equals("quit")) {
+
+            in = console.readLine("> ").trim();
+            bw.write(in + "\n");
+            // NOTE: output is not passed on for some reason unless flush() is added directly
+            // after the write() function call. 
+            bw.flush(); 
+
+            String response = br.readLine();
+
+            String display = response.substring(Math.max(0, response.indexOf(":") + 1)).trim();
+            System.out.println("Response from server: " + display);
+
         }
-        
-        os.flush();
-        os.close();
-        bis.close();
+
+        bw.close();
+        br.close();
+
         socket.close();
     }
 }

@@ -14,6 +14,8 @@ public class Cookie implements Serializable {
     public String command(String input) {
         if (input.equals("get-cookie")) {
             return this.toString();
+        } else if (input.equals("quit")) {
+            return "Quitting...";
         } else {
             return "Unrecognised command";
         }
